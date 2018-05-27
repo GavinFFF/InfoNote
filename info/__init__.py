@@ -6,6 +6,9 @@ from flask_session import Session
 from flask_wtf import CSRFProtect
 from config import Config
 
+db = SQLAlchemy()
+redis_store = None  # type: SQLAlchemy
+
 
 def create_app(config_name):
 	app = Flask(__name__)
@@ -13,10 +16,11 @@ def create_app(config_name):
 	app.config.from_object(Config)
 
 	# 数据库
-	db = SQLAlchemy(app)
+	db.init_app(app)
 
 	# redis
-	redis.StrictRedis(host=Config.REDIS_HOST, port=Config.REDIS_PORT)
+	global redis_store
+	redis_store = redis.StrictRedis(host=Config.REDIS_HOST, port=Config.REDIS_PORT)
 
 	# 开启CSRF
 	CSRFProtect(app)
