@@ -6,18 +6,22 @@ from flask_session import Session
 from flask_wtf import CSRFProtect
 from config import Config
 
-app = Flask(__name__)
 
-app.config.from_object(Config)
+def create_app(config_name):
+	app = Flask(__name__)
 
-# 数据库
-db = SQLAlchemy(app)
+	app.config.from_object(Config)
 
-# redis
-redis.StrictRedis(host=Config.REDIS_HOST, port=Config.REDIS_PORT)
+	# 数据库
+	db = SQLAlchemy(app)
 
-# 开启CSRF
-CSRFProtect(app)
+	# redis
+	redis.StrictRedis(host=Config.REDIS_HOST, port=Config.REDIS_PORT)
 
-# 指定session保存位置
-Session(app)
+	# 开启CSRF
+	CSRFProtect(app)
+
+	# 指定session保存位置
+	Session(app)
+
+	return app

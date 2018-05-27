@@ -4,7 +4,6 @@ import redis
 class Config(object):
 	"""工程配置信息"""
 
-	DEBUG = True
 	# 秘钥，随便写一个
 	SECRET_KEY = 'asdkfjalksdfnknzxcv.akls;df'
 
@@ -21,3 +20,13 @@ class Config(object):
 	SESSION_USE_SIGNER = True
 	SESSION_REDIS = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)
 	PERMANENT_SESSION_LIFETIME = 86400
+
+
+class DevelopmentConfig(Config):
+	"""开发模式下配置"""
+	DEBUG = True
+
+
+class ProductionConfig(Config):
+	"""生产模式下配置"""
+	DEBUG = False

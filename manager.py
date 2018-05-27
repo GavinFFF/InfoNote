@@ -1,6 +1,9 @@
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
-from info import app, db
+from info import create_app, db
+from config import DevelopmentConfig, ProductionConfig
+
+app = create_app(DevelopmentConfig)
 
 # manager启动程序
 manager = Manager(app)
