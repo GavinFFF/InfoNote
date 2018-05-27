@@ -27,7 +27,6 @@ def set_log(config_name):
 
 
 def create_app(config_name):
-
 	set_log(config_name)
 
 	app = Flask(__name__)
@@ -46,5 +45,9 @@ def create_app(config_name):
 
 	# 指定session保存位置
 	Session(app)
+
+	# 注册蓝图
+	from info.modules.index import index_blue
+	app.register_blueprint(index_blue)
 
 	return app
