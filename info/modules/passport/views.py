@@ -76,8 +76,9 @@ def register():
 	user.mobile = mobile
 	user.nick_name = mobile
 
-	# TODO (密码加密)
-	user.password_hash = password
+
+	# user.password_hash = password
+	user.password = password
 
 	try:
 		db.session.add(user)
