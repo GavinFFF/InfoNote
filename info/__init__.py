@@ -7,7 +7,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from flask_wtf import CSRFProtect
-from config import Config
+from flask_wtf.csrf import generate_csrf
 
 db = SQLAlchemy()
 redis_store = None  # type: SQLAlchemy
@@ -41,7 +41,7 @@ def create_app(config_name):
 	redis_store = redis.StrictRedis(host=config_name.REDIS_HOST, port=config_name.REDIS_PORT, decode_responses=True)
 
 	# 开启CSRF
-	# CSRFProtect(app)
+	CSRFProtect(app)
 
 	# 指定session保存位置
 	Session(app)
@@ -53,5 +53,17 @@ def create_app(config_name):
 	# 注册蓝图  --- 登录注册
 	from info.modules.passport import passport_blue
 	app.register_blueprint(passport_blue)
+
+
+	# 在请求之后执行
+	@app.after_request
+	def after_request(response):
+		# 生成csrf
+		csrf_token = generate_csrf()
+
+		# 设置csrf到浏览器的cookie中
+		response.set_cookie('csrf_token', csrf_token)
+
+		return response
 
 	return app

@@ -122,6 +122,9 @@ $(function () {
             method: "post",
             data: JSON.stringify(params),
             contentType: "application/json",
+            headers: {
+                "X-CSRFToken": getCookie("csrf_token")
+            },
             success: function (resp) {
                 if (resp.errno == "0") {
                     // 刷新当前界面
@@ -166,7 +169,34 @@ $(function () {
         }
 
         // 发起注册请求
+        var params = {
+            "mobile": mobile,
+            "sms_code": smscode,
+            "password": password,
+        }
 
+
+        $.ajax({
+            url: "/passport/register",
+            type: "post",
+            data: JSON.stringify(params),
+            contentType: "application/json",
+            headers: {
+                "X-CSRFToken": getCookie("csrf_token")
+            },
+            success: function (resp) {
+                //resp --> 就是你返回的JSON数据
+                //json: {'errno':0, 'errmsg':''}
+                if (resp.errno == "0") {
+                    // 刷新当前界面
+                    location.reload()
+                } else {
+                    alert(resp.errmsg)
+                    $("#register-password-err").html(resp.errmsg)
+                    $("#register-password-err").show()
+                }
+            }
+        })
     })
 })
 
@@ -219,6 +249,9 @@ function sendSMSCode() {
         contentType: "application/json",
         // 响应数据的格式
         dataType: "json",
+        headers: {
+            "X-CSRFToken": getCookie("csrf_token")
+        },
         success: function (resp) {
             if (resp.error == "0") {
                 // 倒计时60秒
@@ -259,6 +292,9 @@ function logout() {
         url: "/passport/logout",
         type: "post",
         contentType: "application/json",
+        headers: {
+            "X-CSRFToken": getCookie("csrf_token")
+        },
         success: function (resp) {
             // 刷新当前界面
             location.reload()
