@@ -95,9 +95,21 @@ def index():
 	for news in news_list:
 		news_dict_li.append(news.to_basic_dict())
 
+	# 分类数据 -> 查询数据库 -> 模板渲染
+	try:
+		categories = Category.query.all()
+	except Exception as e:
+		current_app.logger.error(e)
+		return jsonify(errno=RET.DBERR, errmsg='查询失败')
+
+	category_li = []
+	for category in categories:
+		category_li.append(category.to_dict())
+
 	data = {
 		'user': user.to_dict() if user else None,
 		'news_dict_li': news_dict_li,
+		'category_li': category_li
 	}
 
 	return render_template('news/index.html', data=data)
