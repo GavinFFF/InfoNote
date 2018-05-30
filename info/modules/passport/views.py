@@ -17,7 +17,7 @@ URL:/passport/login
 """
 
 
-@passport_blue.route('/login')
+@passport_blue.route('/login', methods=['POST'])
 def login():
 	# 1.获取参数
 	params_dict = request.json
