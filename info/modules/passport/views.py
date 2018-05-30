@@ -16,7 +16,7 @@ URL:passport/logout
 """
 
 
-@passport_blue.route('/logout')
+@passport_blue.route('/logout', methods=['POST'])
 def logout():
 	# 清除session中登录后保存的对应信息
 	session.pop('user_id', None)
