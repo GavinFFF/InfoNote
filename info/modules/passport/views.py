@@ -12,6 +12,22 @@ from info.models import User
 # 蓝图实现路由
 """
 登录接口
+URL:passport/logout
+"""
+
+
+@passport_blue.route('/logout')
+def logout():
+	# 清除session中登录后保存的对应信息
+	session.pop('user_id', None)
+	session.pop('nick_name', None)
+	session.pop('mobile', None)
+
+	return jsonify(errno=RET.OK, errmsg='退出成功')
+
+
+"""
+登录接口
 URL:/passport/login
 参数:mobile(手机号),password(密码)
 """
