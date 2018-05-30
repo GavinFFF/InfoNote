@@ -9,6 +9,8 @@ from flask_session import Session
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import generate_csrf
 
+from info.utils.common import do_index_class
+
 db = SQLAlchemy()
 redis_store = None  # type: SQLAlchemy
 
@@ -46,6 +48,9 @@ def create_app(config_name):
 	# 指定session保存位置
 	Session(app)
 
+	# 增加自定义过滤器
+	app.add_template_filter(do_index_class, 'index_class')
+
 	# 注册蓝图
 	from info.modules.index import index_blue
 	app.register_blueprint(index_blue)
@@ -53,7 +58,6 @@ def create_app(config_name):
 	# 注册蓝图  --- 登录注册
 	from info.modules.passport import passport_blue
 	app.register_blueprint(passport_blue)
-
 
 	# 在请求之后执行
 	@app.after_request
