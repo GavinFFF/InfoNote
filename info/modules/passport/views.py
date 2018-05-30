@@ -10,6 +10,52 @@ from info.libs.yuntongxun.sms import CCP
 from info.models import User
 
 # 蓝图实现路由
+"""
+登录接口
+URL:/passport/login
+参数:mobile(手机号),password(密码)
+"""
+
+
+@passport_blue.route('/login')
+def login():
+	# 1.获取参数
+	params_dict = request.json
+	mobile = params_dict['mobile']
+	password = params_dict['password']
+
+	# 2.校验参数
+	# 2.1参数完整性
+	if not all([mobile, password]):
+		return jsonify(errno=RET.PARAMERR, errmsg='参数不全')
+
+	# 2.2检查手机号是否正确
+	if not re.match('^1[3456789][0-9]{9}$', mobile):
+		return jsonify(errno=RET.PARAMERR, errmsg='手机号格式错误')
+
+	# 3.校验账号、密码
+	# 3.1数据库查询mobile
+	try:
+		user = User.query.filter_by(mobile=mobile).first()
+	except Exception as e:
+		current_app.logger.error(e)
+		return jsonify(errno=RET.DBERR, errmsg='数据库查询mobile失败')
+
+	# 3.2判断user是否存在
+	if not user:
+		return jsonify(errno=RET.NODATA, errmsg='用户不存在')
+
+	# 3.3对比密码
+	if not user.check_password(password):
+		return jsonify(errno=RET.PWDERR, errmsg='用户名或密码错误')
+
+	# 4.记录登录状态
+	session['user_id'] = user.id
+	session['nick_name'] = mobile
+	session['mobile'] = mobile
+
+	# 5.返回登录成功信息
+	return jsonify(errno=RET.OK, errmsg='登录成功')
 
 
 """
@@ -75,7 +121,6 @@ def register():
 	user = User()
 	user.mobile = mobile
 	user.nick_name = mobile
-
 
 	# user.password_hash = password
 	user.password = password
