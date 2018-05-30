@@ -197,7 +197,18 @@ def get_sms_code():
 	if real_image_code.upper() != image_code.upper():
 		return jsonify(errno=RET.DATAERR, errmsg='验证码错误')
 
-	# 3.3生成短信验证码----第三方只负责发送短信，验证码需要自己设定
+	# 3.3判断手机号是否注册过
+	try:
+		user = User.query.filter_by(mobile=mobile).first()
+	except Exception as e:
+		current_app.logger.error(e)
+		return jsonify(errno=RET.DBERR, errmsg='数据库查询mobile失败')
+
+
+	if user:
+		return jsonify(errno=RET.DATAEXIST, errmsg='用户已注册')
+
+	# 3.4生成短信验证码----第三方只负责发送短信，验证码需要自己设定
 	sms_code_str = '%06d' % random.randint(0, 999999)
 	print(sms_code_str)
 	current_app.logger.debug('sms_code:%s' % sms_code_str)
