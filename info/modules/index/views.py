@@ -37,7 +37,6 @@ def get_news_list():
 		print('filter判断了')
 	try:
 		paginate = News.query.filter(*filter).order_by(News.create_time.desc()).paginate(page, per_page, False)
-		print('paginate:::', paginate)
 	except Exception as e:
 		current_app.logger.error(e)
 		return jsonify(errno=RET.DBERR, errmsg='查询失败')
