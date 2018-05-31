@@ -8,6 +8,3 @@ def do_index_class(index):
 	elif index ==2:
 		return 'third'
 	return ''
-
-# def do_category_class(index):
-# 	if

@@ -59,6 +59,10 @@ def create_app(config_name):
 	from info.modules.passport import passport_blue
 	app.register_blueprint(passport_blue)
 
+	# 新闻详情页蓝图
+	from info.modules.news import news_blue
+	app.register_blueprint(news_blue)
+
 	# 在请求之后执行
 	@app.after_request
 	def after_request(response):
